@@ -1,4 +1,6 @@
 FROM ubuntu:22.04
+# Custom cache invalidation
+ARG CACHEBUST=1
 ENV LANG en_US.utf8
 RUN apt-get update && \
     apt-get install -yq tzdata software-properties-common \
@@ -7,6 +9,8 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/* \
     && add-apt-repository ppa:ondrej/php -y
 ENV TZ="America/New_York"
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
 RUN apt-get update && apt-get install -y \
     php8.0 \
     mariadb-client \
@@ -30,9 +34,12 @@ RUN apt-get update && apt-get install -y \
     php8.0-zip \
     memcached \
     zip \
+    nano \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /var/www/html/i-doit
-ADD idoit-open-1.19.zip /var/www/html/i-doit/idoit-open-1.19.zip
+# Custom cache invalidation
+ARG CACHEBUST=1
+ADD idoit-open-25.zip /var/www/html/i-doit/idoit-open-25.zip
 VOLUME /var/www/html/i-doit/upload /var/www/html/i-doit/src
 ADD ./scripts /scripts
 RUN chmod +x /scripts/init.sh
